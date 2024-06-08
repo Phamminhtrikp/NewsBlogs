@@ -1,8 +1,12 @@
-
+const BlogPost = require('../models/blogPost');
 class SiteController {
     // [GET] /
-    index(req, res) {
-        res.render('home');
+    index(req, res, next) {
+
+        BlogPost.find({})
+        .then(BlogPosts => res.render('layouts/main', {content: '../home', BlogPosts}))
+        .catch(next);
+
     }
 
     // [GET] /search
