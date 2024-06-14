@@ -1,0 +1,183 @@
+<form class="mt-4" name="container-form" method="POST" action="/blogPosts/handle-form-actions">
+    <div>
+        <h3>Blog của tôi</h3>
+        <a class="text-decoration-none" href="/me/trash/blogs">
+            <img class="user-trash"
+                src="https://static.vecteezy.com/system/resources/previews/000/649/132/original/vector-trash-icon-symbol-sign.jpg"
+                alt="">
+            Thùng rác ( <%= deletedCount %> )
+        </a>
+
+        <div class="mt-4 d-flex align-items-sm-center">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+                <label class="form-check-label" for="checkbox-all">
+                    Chọn tất cả
+                </label>
+            </div>
+
+            <select class="form-select form-select-sm checkbox-select-all-options" aria-label="Default select example" name="action" required="required">
+                <option value="" disabled selected>-- Chọn hành động --</option>
+                <option value="delete">Xóa</option>
+            </select>
+
+            <button class="btn btn-primary btn-sm check-all-submit-btn disabled">Thực hiện</button>
+        </div>
+    </div>
+
+
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">#</th>
+                <th scope="col">
+                    Tên bài viết
+                    <a href="?_sort&column=name&type=desc">
+                        <i class="fa-solid fa-sort"></i>
+                    </a>
+                </th>
+                <th scope="col">Nội dung</th>
+                <th scope="col">Ngày tạo</th>
+                <th scope="col" colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if(blogPosts.length> 0) { %>
+                <% blogPosts.forEach((item)=> { %>
+                    <tr>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="blogPostIDs[]"
+                                    value="<%= item._id %>">
+                            </div>
+                        </td>
+                        <th scope="row">
+                            <%# ss %>
+                        </th>
+                        <td>
+                            <%= item.title %>
+                        </td>
+                        <td>
+                            <%= item.content %>
+                        </td>
+                        <td>
+                            <%= item.createdAt %>
+                        </td>
+
+                        <td><a href="/blogposts/<%= item._id %>/edit" type="button"
+                                class="btn btn-info btn-link">Sửa</a>
+                        </td>
+                        <td><a href="" type="button" class="btn btn-warning btn-link" data-bs-id="<%= item._id %>"
+                                data-bs-toggle="modal" data-bs-target="#delete-blogPost-modal">Xóa</a></td>
+                    </tr>
+                <% }) %>
+
+            <% } else { %>
+                <tr>
+                    <td colspan="5" class="text-center fs-4">
+                        Bạn chưa đăng bài viết nào!
+                        <a class="text-decoration-none" href="/blogposts/create">Đăng bài viết</a>
+                    </td>
+                </tr>
+            <% } %>
+
+        </tbody>
+    </table>
+</form>
+
+
+<!-- Confirm delete blog post -->
+<!-- Modal -->
+<div class="modal fade" id="delete-blogPost-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa Bài Đăng?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn chắc chắn muốn xóa bài đăng này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button id="btn-delete-blog" type="button" class="btn btn-danger">Xóa bỏ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete hidden form -->
+<form method="POST" name="delete-blog-form"></form>
+
+<script>
+
+    var blogID;
+    var deleteForm = document.forms['delete-blog-form'];
+
+    const deleteBlogPostModal = document.getElementById('delete-blogPost-modal');
+    deleteBlogPostModal.addEventListener('show.bs.modal', event => {
+        // Button that triggered the modal
+        const button = event.relatedTarget;
+        blogID = button.getAttribute('data-bs-id');
+        console.log(blogID);
+    });
+
+
+    var btnDeleteBlog = document.getElementById('btn-delete-blog');
+    btnDeleteBlog.onclick = function () {
+        deleteForm.action = '/blogposts/' + blogID + '?_method=DELETE';
+        deleteForm.submit();
+    }
+
+    // Jquery
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkboxAll = $('#checkbox-all');
+        var blogPostItemCheckbox = $('input[name="blogPostIDs[]"]');
+        var checkAllSubmitBtn = $('.check-all-submit-btn');
+        var containerForm = document.forms['container-form'];
+        
+        
+
+        // Checkbox  all changed
+        checkboxAll.change(function () {
+            isCheckedAll = $(this).prop('checked');
+            blogPostItemCheckbox.prop('checked', isCheckedAll);
+            renderCheckAllSubmitBtn();
+
+        });
+
+        // Blog post item checkbox changed
+        blogPostItemCheckbox.change(function () {
+            var isCheckedAll = blogPostItemCheckbox.length === $('input[name="blogPostIDs[]"]:checked').length;
+            checkboxAll.prop('checked', isCheckedAll);
+            renderCheckAllSubmitBtn();
+        });
+
+        // check all submit button 
+        checkAllSubmitBtn.click(function (e) {
+            e.preventDefault();
+            
+            var isSubmittable = !$(this).hasClass('disabled');
+            
+            if(isSubmittable){
+                containerForm.submit();
+            }
+        });
+
+        // Re-render check all submit button 
+        function renderCheckAllSubmitBtn() {
+            var checkedCount = $('input[name="blogPostIDs[]"]:checked').length;
+            if(checkedCount > 0) {
+                checkAllSubmitBtn.removeClass('disabled');
+            }
+            else {
+                checkAllSubmitBtn.addClass('disabled');
+
+            }
+        }
+
+        // console.log()
+    });
+
+</script>

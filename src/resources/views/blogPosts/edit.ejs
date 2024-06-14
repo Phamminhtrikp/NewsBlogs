@@ -1,0 +1,26 @@
+<div class="mt-4">
+    <h3>Edit Blog</h3>
+
+    <form class="mt-4" method="POST" action="/blogposts/<%= blogPost._id %>?_method=PUT">
+        <div class="mb-3">
+          <label for="title" class="form-label">Tiêu đề</label>
+          <input type="text" class="form-control" id="title" name="title" value="<%= blogPost.title %>">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Mô tả</label>
+            <textarea class="form-control" id="description" rows="3" name="description" ><%= blogPost.description %></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="content" class="form-label">Nội dung</label>
+            <textarea class="form-control" id="content" rows="3" name="content" ><%= blogPost.content %></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="urlToImage" class="form-label">URL Hình ảnh</label>
+            <input type="text" class="form-control" id="urlToImage" name="ulrToImage" value="<%= blogPost.urlToImage %>">
+          </div>
+          
+        
+        <button type="submit" class="btn btn-primary">Lưu Lại</button>
+      </form>
+
+</div>

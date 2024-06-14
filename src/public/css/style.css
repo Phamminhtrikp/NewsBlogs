@@ -2,3 +2,22 @@
     margin-top: 16px;
 
 }
+
+.user-avatar {
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    padding-right: 4px;
+}
+.user-trash {
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    padding-right: 4px;
+    background-color: aqua;
+}
+
+.checkbox-select-all-options {
+    width: 200px;
+    margin: 0 8px;
+}

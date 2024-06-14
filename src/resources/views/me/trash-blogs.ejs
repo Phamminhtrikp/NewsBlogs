@@ -1,0 +1,116 @@
+<div class="mt-4">
+    <div>
+        <a class="text-decoration-none" href="/me/stored/blogs">Danh sách bài viết</a>
+        <h3>Blog đã xóa của tôi</h3>
+    </div>
+
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tên bài viết</th>
+                <th scope="col">Nội dung</th>
+                <th scope="col">Ngày xóa</th>
+                <th scope="col" colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if(blogPosts.length > 0) { %>
+                <% blogPosts.forEach((item)=> { %>
+                    <tr>
+                        <th scope="row">
+                            <%# ss %>
+                        </th>
+                        <td>
+                            <%= item.title %>
+                        </td>
+                        <td>
+                            <%= item.content %>
+                        </td>
+                        <td>
+                            <%= item.deletedAt %>
+                        </td>
+                        <td>
+                            <a href="" type="button" class="btn btn-info btn-link text-decoration-none btn-restore" data-bs-id="<%= item._id %>">Khôi phục</a>
+                        </td>
+                        <td>
+                            <a href="" type="button" class="btn btn-warning btn-link text-decoration-none" data-bs-id="<%= item._id %>" data-bs-toggle="modal" data-bs-target="#delete-blogPost-modal">Xóa vĩnh viễn</a>
+                        </td>
+                    </tr>
+                <% }); %>
+
+            <% } else { %>
+                <tr>
+                    <td colspan="5" class="text-center fs-4">
+                        Thùng rác trống!!!
+                        <a class="text-decoration-none" href="/me/stored/blogs">Quay lại</a>
+                    </td>
+                </tr>
+                <% } %>
+
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Confirm delete blog post -->
+<!-- Modal -->
+<div class="modal fade" id="delete-blogPost-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa Bài Đăng?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               Hành động này không thể khôi phục. Bạn chắc chắn muốn xóa bài đăng này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button id="btn-delete-blog" type="button" class="btn btn-danger">Xóa vĩnh viễn</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- hidden form -->
+<form method="POST" name="delete-blog-form"></form>
+<form method="POST" name="restore-blog-form"></form>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var blogID;
+        var deleteForm = document.forms['delete-blog-form'];
+        var restoreForm = document.forms['restore-blog-form'];
+        var btnDeleteBlog = document.getElementById('btn-delete-blog');
+        var restoreBtn = $('.btn-restore');
+
+
+        // When dialog confirm clicked
+        $('#delete-blogPost-modal').on('show.bs.modal', event => {
+            // Button that triggered the modal
+            const button = event.relatedTarget;
+            blogID = button.getAttribute('data-bs-id');
+        });
+
+        // when delete blog btn clicked
+        btnDeleteBlog.onclick = function () {
+            deleteForm.action = '/blogposts/' + blogID + '/force?_method=DELETE';
+            deleteForm.submit();
+        }
+
+        restoreBtn.click( function (e) {
+            e.preventDefault();
+
+            var blogPostID = $(this).data('bsId');
+            restoreForm.action = '/blogposts/' + blogPostID + '/restore?_method=PATCH';
+            restoreForm.submit();
+           // console.log($(this).data('bsId'));
+        });
+
+    });
+
+
+
+</script>
