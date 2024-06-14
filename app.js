@@ -37,16 +37,7 @@ app.set('views', path.join(__dirname, 'src', 'resources', 'views'));
 route(app);
 
 // Helpers function 
-app.locals.Helpers = {
-    sum: (a, b) => a + b,
-    sortable: (field, sort) => {
-
-
-        return ` <a href="?_sort&column=name&type=desc">
-                    <i class="fa-solid fa-sort"></i>
-        </a>`;
-    }
-}
+app.locals.Helpers = require('./src/app/helpers/helpers');
 
 app.listen(port, () => {
     console.log(`App running at port http://localhost:${port}`);

@@ -17,6 +17,16 @@ const BlogPost = new Schema({
 
 }, { timestamps: true });
 
+// Custom query helpers 
+BlogPost.query.sortable = function (req) {
+    if(req.query.hasOwnProperty('_sort')) {
+        const isValidType = ['asc', 'desc'].includes(req.query.type)
+        return this.sort({
+            [req.query.column]: isValidType ? req.query.type : 'desc',
+        });
+    }
+    return this;
+}
 // Add plugins
 mongoose.plugin(slug);
 BlogPost.plugin(mongooseDelete, { deletedAt: true, overrideMethods: true, });

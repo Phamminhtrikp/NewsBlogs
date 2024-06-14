@@ -4,20 +4,7 @@ class MeController {
     // [GET] /stored/blog
     storedBlogs(req, res, next) {
 
-        let blogPostQuery = BlogPost.find({});
-
-        // console.log(req.query.hasOwnProperty('_sort'))
-
-        // if(req.query.hasOwnProperty('_sort')) {
-        //     blogPostQuery = blogPostQuery.sort({
-        //         name: 'asc'
-        //         // [req.query.column]: 'asc'
-        //     });
-        // }
-
-
-
-        Promise.all([blogPostQuery, BlogPost.countDocumentsWithDeleted({deleted: true})])
+        Promise.all([BlogPost.find({}).sortable(req), BlogPost.countDocumentsWithDeleted({deleted: true})])
             .then(([blogPosts, deletedCount]) => {
                 res.render('layouts/main', {content: '../me/stored-blogs', blogPosts, deletedCount, })
             })

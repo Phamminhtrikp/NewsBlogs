@@ -16,10 +16,10 @@
         </thead>
         <tbody>
             <% if(blogPosts.length > 0) { %>
-                <% blogPosts.forEach((item)=> { %>
+                <% blogPosts.forEach((item, index)=> { %>
                     <tr>
                         <th scope="row">
-                            <%# ss %>
+                            <%= Helpers.sum(index, 1) %>
                         </th>
                         <td>
                             <%= item.title %>

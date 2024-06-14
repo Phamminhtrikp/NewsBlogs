@@ -33,18 +33,22 @@
                 <th scope="col">#</th>
                 <th scope="col">
                     Tên bài viết
-                    <a href="?_sort&column=name&type=desc">
-                        <i class="fa-solid fa-sort"></i>
-                    </a>
+                    <%- Helpers.sortable('title', _sort )  %>
                 </th>
-                <th scope="col">Nội dung</th>
-                <th scope="col">Ngày tạo</th>
+                <th scope="col">
+                    Nội dung
+                    <%- Helpers.sortable('content', _sort )  %>
+                </th>
+                <th scope="col">
+                    Ngày tạo
+                    <%- Helpers.sortable('createdAt', _sort )  %>
+                </th>
                 <th scope="col" colspan="2">Actions</th>
             </tr>
         </thead>
         <tbody>
             <% if(blogPosts.length> 0) { %>
-                <% blogPosts.forEach((item)=> { %>
+                <% blogPosts.forEach((item, index)=> { %>
                     <tr>
                         <td>
                             <div class="form-check">
@@ -53,7 +57,7 @@
                             </div>
                         </td>
                         <th scope="row">
-                            <%# ss %>
+                            <%= Helpers.sum(index, 1) %>
                         </th>
                         <td>
                             <%= item.title %>
