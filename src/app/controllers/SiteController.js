@@ -13,6 +13,11 @@ class SiteController {
     search(req, res) {
         res.render('search');
     }
+
+    // [GET] /register
+    register(req, res) {
+        res.render('layouts/main', {content: '../auth/register'});
+    }
 }
 
 module.exports = new SiteController;
